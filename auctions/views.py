@@ -1,11 +1,13 @@
-from django.shortcuts import render,get_object_or_404,get_list_or_404
+from django.shortcuts import render,get_object_or_404,get_list_or_404,redirect
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from .models import Items,Sales,Bid
-from .forms import Auctionform
+from .forms import Auctionform,Userform
+from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 from django.http import HttpResponse
 
-def add_item(request):
+def add_item(request):			#adding items by user				
 	if request.method == 'POST':
 		aform=Auctionform(request.POST,request.FILES)
 		if aform.is_valid():
@@ -24,9 +26,11 @@ def add_item(request):
 			#intance=Items(file_field=request.FILES['file'])
 			#instance.save()
 			#form.save()
-			
+			return redirect('index')
+				
 	else:
 	    aform = Auctionform()
+	    
 	context={
 	"form":aform
 	}
@@ -35,3 +39,62 @@ def index(request):
 	products=get_list_or_404(Items)
 	context={"pro":products,"title":"AUCTION"}
 	return render(request,"index.html",context)
+
+
+def logout_user(request):
+	user = request.user
+	logout(request)
+	form = UserForm(request.POST or None)
+	context = {
+		'form':form
+	}
+	#return render(request, 'login.html', context)
+	return redirect('index')
+
+
+def login_user(request):
+	if request.method == "POST":
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username=username, password=password)
+		if user is not None:
+			if user.is_active:
+				login(request,user)
+		
+				return redirect('home')
+			else:
+				return render(request, 'login.html', {'error_message':'Account Deactivaated'})
+		else:
+			return render(request, 'login.html', {'error_message':'Invalid Login'})
+	return render(request, 'login.html')
+
+def register(request):
+	form = Userform(request.POST or None)
+	if form.is_valid():
+		user = form.save(commit=False)
+		username = form.cleaned_data['username']
+		password = form.cleaned_data['password']
+		user.set_password(password)
+		user.save()
+		user = authenticate(username = username, password=password)
+		if user is not None:
+			if user.is_active:
+				login(request,user)
+				
+				return render(request, 'register.html')
+	context = {'form':form}
+	return render(request, 'register.html', context)
+def my_auctions(request):
+	user = request.user
+	products=Items.objects.all().filter(user=request.user)
+	#products=get_list_or_404(Items).filter(user=request.user)
+	context={"pro":products,"user":user}
+	return render(request,"my_auctions.html",context)
+
+def home(request):
+	user = request.user
+	products=get_list_or_404(Items)
+	context={"pro":products,"title":"AUCTION"}
+	return render(request,"home.html",context)
+
+

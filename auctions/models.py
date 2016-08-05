@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import Permission, User
 
 # Create your models here.
 class Sales(models.Model):
@@ -9,6 +10,7 @@ class Sales(models.Model):
 		return self.product_cat
 
 class Items(models.Model):
+	user = models.ForeignKey(User, default=1)
 	item_id = models.AutoField(primary_key=True,max_length=100)
 	item_name = models.CharField(max_length=100)
 	item_title = models.CharField(max_length=100)

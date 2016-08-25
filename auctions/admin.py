@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth import authenticate, login, logout
 
 from .models import Sales,Items,Bid
 

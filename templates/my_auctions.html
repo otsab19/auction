@@ -1,9 +1,31 @@
-<h1>{{ user }}</h1>
-{% for product in pro %}
+<!--DOCTYPE html -->
+{% extends 'home.html' %}
 
-<h2>{{ product.item_name }}</h2>
-<h2>{{ product.item_desc }}</h2>
-<h2>{{ product.item_time_add }}</h2>
-<h2>{{ product.item_tiem_end }}</h2>
-<br>
-{% endfor %}
+	{% block content %}
+	
+		<div class="container">
+			<div class="bg-info">
+
+	{% for product in pro %}
+					<div class="container">
+					  <div class="row">
+					    <div class="col-sm-4">
+					      <div class="panel panel-primary">
+					        <div class="panel-heading">{{ product.item_name }}<br>{{ product.item_price }}</div>
+					        <div class="panel-body"><img src="{{ product.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236" ></div>
+					        
+					      
+					      </div>
+					    </div>
+				{% endfor %}
+		    
+
+
+
+
+		</div>	
+
+			</div>
+
+	</div>
+	{% endblock %}

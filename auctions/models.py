@@ -19,19 +19,22 @@ class Items(models.Model):
 	item_image = models.FileField()
 	sales = models.ForeignKey(Sales,on_delete=models.CASCADE)
 	item_time_add = models.DateTimeField()
-	item_time_end = models.DateTimeField()
+	item_date_end = models.DateField()
+	item_time_end = models.TimeField()
 
 	def __str__(self):
-		return self.item_name
+		return str(self.item_name)
 
 
 class Bid(models.Model):
-	bid_name = models.IntegerField(primary_key=True)
-	auction_id=models.ForeignKey(Items,on_delete=models.CASCADE)
+	auction_id= models.AutoField(primary_key=True)
+	#auction_product=models.ForeignKey(Items,on_delete=models.CASCADE)
 	bid_amt=models.IntegerField()
 	bid_time=models.DateTimeField()
-	def __str__(self):
-		return self.bid_name
+	user = models.ForeignKey(User, default=1)
+	bid_item = models.ForeignKey(Items,on_delete=models.CASCADE)
 
+	def __str__(self):
+		return str(self.bid_item) + " " + str(self.user)
 
 

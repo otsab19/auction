@@ -1,77 +1,106 @@
 <!--DOCTYPE html -->
 {% load staticfiles %}
+<html>
+
+<head>
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.min.css" %}" />
-<script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
-<html>
-<head>
-<style>
-.jumbotron{
-	background-color: #9BBF62;
-      color: #fff;
+<script type='text/javascript' src='{% static "js/jquery-3.1.0.min.js" %}'></script>
+<script type='text/javascript' src='{% static "js/SyoTimer-master/build/jquery.syotimer.js" %}'></script>
+<script type='text/javascript' src='{% static "js/SyoTimer-master/build/jquery.syotimer.min.js" %}'></script>
+<script type='text/javascript' src='{% static "js/SyoTimer-master/build/jquery.syotimer.min.js" %}'></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<script src="{% static "js/bootstrap.js" %}"></script>
+<script>
+$(document).ready(function(){
+    $(".myBtn").click(function(){
+    $(this).siblings().collapse('toggle'); // this will work only if .collapse is the next sibling
+    //$(this).add("collapse");
+});
+});
+</script>
 
-}
+<style>
+
+.top-buffer {height:80px;}
 #bid{
      color: #111; font-family: 'Helvetica Neue', sans-serif; font-size: 75px; font-weight: bold; letter-spacing: -1px; line-height: 1; text-align: center; }
 }
+
 </style>
 </head>
 <body>
-	
+
 	<div class="jumbotron">
 
 		<h2 class='text-center' id='bid'>LILAMI</h2>
 	
 	
-	<nav class="navbar navbar-inverse navbar-defaults">
-	  <div class="container-fluid">
+		<nav class="navbar navbar-inverse navbar-defaults">
+	  	<div class="container-fluid">
 	    <div class="navbar-header">
-	      <a class="nav navbar-brand">AUCTION</a>
+	      <a class="nav navbar-brand" href="{% url 'home' %}">AUCTION</a>
 	    </div>
-	    <ul class="nav navbar-nav">
-	      <li class="active"><a href="#">Home</a></li>
-	       <li class="active"><a href="{% url 'my_auctions' %}">My Auctions</a></li>
-	      <li class="active"><a href="#">Contact</a></li>
-	       <li class='active'><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+	    	<ul class="nav navbar-nav">
+	      		<li class="active"><a href="#">{{ user }}</a></li>
+	      		<li class="active"><a href="{% url 'add_item' %}">Create Auction</a></li>
+	       		<li class="active"><a href="{% url 'my_auctions' %}">My Auctions</a></li>
+	      		<li class="active"><a href="#">Contact</a></li>
+	       
+	    	</ul>
 
 	      
 	    
-	    <ul class="nav navbar-form navbar-right">
+	   		<ul class="nav navbar-nav navbar-right">
 
 	      
-	      
-	      <li class="nav navbar-form navbar-right">
-	      <button type="submit" class="btn btn-default"><a href="{% url 'login_user' %}">Logout</button>
-	      </a>
-	      </li>
-	      </ul>
+	      		<li class='active'><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+	      		<li class="active">
+	      		<a href="{% url 'logout_user' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+	    	</ul>
 	    
-	  </div>
-	</nav>
-	<div class="container">
-		<div class="bg-info">
+	    </div>
+		</nav>
 
-			{% for product in pro %}
-				<div class="container">
-				  <div class="row">
-				    <div class="col-sm-4">
-				      <div class="panel panel-primary">
-				        <div class="panel-heading">{{ product.item_name }}<br>{{ product.item_price }}</div>
-				        <div class="panel-body"><img src="{{ product.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236" ></div>
-				        <div class="panel-footer"><button type="button" class="btn btn-success"><a href="http://127.0.0.1:8000/">BID</a></button></div>
-				      
-				      </div>
-				    </div>
-			{% endfor %}
-	    
+	{% block content %}
+		<div class="container">
+			<div class="bg-success">
+					<div class="container">
+						    <div class="row">
+						  	{% for product in pro %}
+						  		{% if request.user != product.user %}
+						    <div class="col-sm-4">
+						    		
+								<div class="panel panel-primary">
+						        <div class="panel-heading ">{{ product.item_name }}<br>
+						        {{ product.user }}<br>{{ product.item_price }}
+						        <div>{{ product.item_date_end }}
+						        {{ product.item_time_end }}</div>
 
+						        </div>
+						        <div class="panel-body "><img src="{{ product.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236"></div>
+						        <div class="panel-footer top-buffer"><a href='{% url 'bid' product.item_id %}'><button type="button" class="btn btn-success">BID</button>
+						        
 
+						        <div class="collapse">
+						    		<form >
+						 
+						    				<input type='text' style="color: #DE2A00;" select=''>
+						    				<a href='{% url 'bid' product.item_id %}'><input type ='button' class="btn btn-success" value="Submit"></a>
+						    			</form> 
+						    	</div>
 
+						        </div>       
 
+						    </div>
+					    </div>
+					    		{% endif %}
+					    	{% endfor %}
+		    
 	</div>	
 
-		</div>
+	
+{% endblock %}
 
-	</div>
 </body>
 </html>

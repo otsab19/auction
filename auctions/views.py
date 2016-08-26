@@ -97,7 +97,7 @@ def register(request):
 				login_user(request)
 				
 				#return render(request,"index.html")
-				return redirect('index')
+				return redirect('home')
 	context = {'form':form}
 	return render(request, 'register.html', context)
 def my_auctions(request):#show action added by a user
@@ -123,16 +123,18 @@ def logout_user(request):
 
 def bid(request,item_id): #bidding page
 	pro=get_object_or_404(Items,pk=item_id)
+	all_bids=Bid.objects.filter(bid_item=pro)
 	if request.method == 'POST':
 		bid_form=Bidform(request.POST or None)
 		if bid_form.is_valid():
 			bid_obj=Bid()
 			bid_obj.bid_amt=bid_form.cleaned_data["bid_amt"]
-			if(bid_obj.bid_amt<pro.item_price):
-				context={"pro":pro,'form':bid_form,"error_message":"Bid more than previous bidders"}
-				return render(request,"bid.html",context)
-			else:	
-				bid_obj.bid_item=pro
+			for bi in all_bids:
+				if((bid_obj.bid_amt<pro.item_price) or (bid_obj.bid_amt<bi.bid_amt)):
+					context={"pro":pro,'form':bid_form,"error_message":"Bid more than previous bidders"}
+					return render(request,"bid.html",context)
+				else:	
+					bid_obj.bid_item=pro
 			bid_obj.bid_time=datetime.datetime.now()
 			bid_obj.user=request.user
 			bid_obj.save()
@@ -141,6 +143,6 @@ def bid(request,item_id): #bidding page
 	    bid_form = Bidform()		
 	
 	current_user=request.user
-	all_bids=Bid.objects.filter(bid_item=pro)
+	
 	context={"pro":pro,'form':bid_form,'all_bids':all_bids,'cu':current_user}
 	return render(request,"bid.html",context)

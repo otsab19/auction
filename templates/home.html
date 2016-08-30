@@ -5,6 +5,8 @@
 <head>
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.min.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "css/sweetalert.css" %}" />
+<script type='text/javascript' src='{% static "js/sweetalert-master/dist/sweetalert.min.js" %}'></script>
 <script type='text/javascript' src='{% static "js/jquery-3.1.0.min.js" %}'></script>
 <script type='text/javascript' src='{% static "js/SyoTimer-master/build/jquery.syotimer.js" %}'></script>
 <script type='text/javascript' src='{% static "js/SyoTimer-master/build/jquery.syotimer.min.js" %}'></script>
@@ -12,7 +14,7 @@
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/bootstrap.js" %}"></script>
 <script>
-$(document).ready(function(){
+$(document).ready(function(){ //collapsing while bidding
     $(".myBtn").click(function(){
     $(this).siblings().collapse('toggle'); // this will work only if .collapse is the next sibling
     //$(this).add("collapse");
@@ -52,9 +54,13 @@ $(document).ready(function(){
 	      
 	    
 	   		<ul class="nav navbar-nav navbar-right">
-
-	      
-	      		<li class='active'><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
+          <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'home' %}" >
+        <li class="form-group">
+          <input type="text" type='submit' class="form-control" name="q" value="{{ request.GET.q }}">
+           <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search"></span></button>
+        </li>
+        
+      </form>
 	      		<li class="active">
 	      		<a href="{% url 'logout_user' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 	    	</ul>
@@ -72,9 +78,9 @@ $(document).ready(function(){
 						    <div class="col-sm-4">
 						    		
 								<div class="panel panel-primary">
-						        <div class="panel-heading ">{{ product.item_name }}<br>
-						        {{ product.user }}<br>{{ product.item_price }}
-						        <div>{{ product.item_date_end }}
+						        <div class="panel-heading "><h2>{{ product.item_name }}</h2><br>
+						        {{ product.user }}<br>Rs.{{ product.item_price }}
+						        <div>Ends At:{{ product.item_date_end }}
 						        {{ product.item_time_end }}</div>
 
 						        </div>

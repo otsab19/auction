@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^home/$', views.home, name='home'),
     url(r'^logout/$', views.logout_user, name='logout_user'),
     url(r'^(?P<item_id>[0-9]+)/bid/$', views.bid, name='bid'),
+    url(r'^(?P<item_id>[0-9]+)/delete_bid/$', views.delete_bid, name='delete_bid')
 
 ]

@@ -4,7 +4,7 @@
 {% if error_message %}
     <p><strong>{{  error_message }}</strong></p>
 {% endif %}
-<div class="container">
+    <div class="container">
 		<div class="bg-info">
 		
 				<div class="container">
@@ -14,7 +14,7 @@
 				    <div class="col-sm-8">
 				    		
 				      <div class="panel panel-primary">
-				        <div class="panel-heading ">{{ pro.item_name }}<br>Rs.{{ pro.item_price }}
+				        <div class="panel-heading "><h2>{{ pro.item_name }}</h2><br>Rs.{{ pro.item_price }}<br>{{ pro.item_desc}}
 				     
 
 					<div id="simple_timer"></div>
@@ -32,9 +32,13 @@
 
 				        </div>
 				        <div class="panel-body "><img src="{{ pro.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236"></div>
-				        <div class="panel-footer top-buffer"><button type="button" class="btn btn-success myBtn">BID</button>
-				        
-
+				        <div class="panel-footer top-buffer">
+                        {% if cu_date > cu_datetime %}
+                            <button type="button" class="btn btn-success myBtn">BID</button>
+				        {% else %}
+                            Winner: {{ us }}
+                            <br>Rs.{{ max_bid }}
+                        {% endif %}
 				        	<div class="collapse">
 				    			<form method="POST" enctype="multipart/form-data" action="">{% csrf_token %}
 				 						{{ form.as_table }}
@@ -50,41 +54,58 @@
 				    </div>
 
 				    </div>
+                        <div class='row'>                    
 				    	
-				        <div class="list-group">
-                                <h2> <span class="label label-default">Other Bids</span></h2>
-                                <table class="table-condensed">
-                                    <thead>
-                                      <tr>
-                                        <th>Name</th>
-                                        <th>Bid Amount</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for bid in all_bids %}
-                                    {% if request.user != bid.user %}
-                                        <tr>
-                                        <td>{{ bid.user }}</td>
-                                        <td>Rs.{{ bid.bid_amt}}</td>
-                                        </tr>
-                                      {% endif %}
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+    				        <div class="list-group col-sm-2">
+                                    <h2> <span class="label label-default">Other Bids</span></h2>
+                                    <table class="table-condensed">
+                                        <thead>
+                                          <tr>
+                                            <th>Name</th>
+                                            <th>Bid Amount</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for bid in all_bids %}
+                                        {% if request.user != bid.user %}
+                                            <tr>
+                                            <td>{{ bid.user }}</td>
+                                            <td>Rs.{{ bid.bid_amt}}</td>
+                                            </tr>
+                                          {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+    				        </div>
+                                    <h2> <span class="label label-default">Your Bids</span></h2>
+                                    <table class="table-condensed">
+                                        <tbody>
+                                        {% for bid in all_bids %}
+                                        {% if request.user = bid.user %}
+                                            <tr>
+                                            <td>Rs.{{ bid.bid_amt}}</td>
+                                            {% if cu_date > cu_datetime %}
+                                            <td><form method="POST" enctype="multipart/form-data" id="delete" action="{% url 'delete_bid' pro.item_id %}" >
+                                                {% csrf_token %} <button type='submit' onClick='swa();' class="btn btn-danger btn-xs"  ><span class='glyphicon glyphicon-remove'></button></span> </form></td>
+                                            {% endif %}    
+                                            </tr>
+                                          {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
 				        </div>
-				    </div>
+                    </div>
 
 				    	
 
-				    </div>
-</div>
+				</div>
+        </div>
+    </div>    
 		
 	    
 
 	
-	<button onclick="myFunction()">Try it</button>
-
-<p id="demo"></p>
+	
 
 
 
@@ -140,15 +161,32 @@
             background-image: url(../demos/images/timer_long.png);
         }
     </style>
+
+<form><button onClick='swa();'>click</button></form>
 <script>
-function myFunction() {
-    var x;
-    if (confirm("Press a button!") == true) {
-        x = getElementByClassName('bi');
-    } else {
-        x = "You pressed Cancel!";
-    }
-    document.getElementById("demo").innerHTML = x;
-}
-</script>
+function swa(){
+        swal({
+            title: "Are you sure?",
+            text: "You will remove your bid",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55", 
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel plx!",
+            closeOnConfirm: false,
+            closeOnCancel: false, 
+            },  
+        function(isConfirm){
+            if (isConfirm) {
+                swal("Deleted!", "Your imaginary file has been deleted.", "success");   
+                document.getElementById('delete').action="{% url 'delete_bid' pro.item_id %}";
+                return true;
+            }
+            else 
+            {
+                swal("Cancelled", "Your imaginary file is safe :)", "error");   
+            } });
+            } 
+ </script>
+
 {% endblock %}

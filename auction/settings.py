@@ -79,8 +79,18 @@ WSGI_APPLICATION = 'auction.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # Or path to database file if using sqlite3.
+        'NAME': 'auction',
+        # The following settings are not used with sqlite3:
+        'USER': 'otsab',
+        'PASSWORD': '123',
+        # Empty for localhost through domain sockets or
+        # '127.0.0.1' for localhost through TCP.
+        'HOST': 'localhost',
+        # Set to empty string for default.
+        'PORT': '',
     }
 }
 

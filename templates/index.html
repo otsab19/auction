@@ -31,17 +31,6 @@
 <script src="{% static "js/bootstrap.js" %}"></script>
 
 <script>
-$(document).ready(function(){
-    $("#myBtn").click(function(){
-        $(".collapse").collapse('show');
-    });
-    $(".btn-success").click(function(){
-        $(".collapse").collapse('show');
-    });
-    $(".btn-warning").click(function(){
-        $(".collapse").collapse('hide');
-    });
-});
 
 $(document).ready(function(){
     $("#myBtn2").click(function(){
@@ -72,13 +61,21 @@ $(document).ready(function(){
 	       
 	       </ul>
 
-	      <ul class="nav navbar-nav navbar-right">
-	     <li class='active'><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
-        <li id="myBtn2"><a href='#'><span class="glyphicon glyphicon-log-in"></span> 
-        Login</a></li>
-        <li>
-        <a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+	     <ul class="nav navbar-nav navbar-right">
+          <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'index' %}" >
+        <li class="form-group">
+          <input type="text" type='submit' class="form-control" name="q" value="{{ request.GET.q }}">
+           <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search"></span></button>
         </li>
+        
+      </form>
+
+	       
+          <li id="myBtn2"><a href='#'><span class="glyphicon glyphicon-log-in"></span> 
+          Login</a></li>
+          <li>
+          <a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+          </li>
       </ul>
 	    </ul>
 	   
@@ -96,9 +93,9 @@ $(document).ready(function(){
 				  <div class="row">
 				    <div class="col-sm-4">
 				      <div class="panel panel-primary">
-				        <div class="panel-heading">{{ product.item_name }}<br>{{ product.item_price }}</div>
+				        <div class="panel-heading"><h2>{{ product.item_name }}</h2><br>Rs.{{ product.item_price }}</div>
 				        <div class="panel-body"><img src="{{ product.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236" ></div>
-				        <div class="panel-footer"><button type="button" class="btn btn-success"><a href="http://127.0.0.1:8000/">BID</a></button></div>
+				        <div class="panel-footer" id="myBtn2"><button type="button" class="btn btn-success" id="myBtn2" >BID</button></div>
 				      
 				      </div>
 				    </div>

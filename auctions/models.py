@@ -32,8 +32,7 @@ class Bid(models.Model):
 	bid_amt=models.IntegerField()
 	bid_time=models.DateTimeField()
 	user = models.ForeignKey(User, default=1)
-	bid_item = models.ForeignKey(Items,on_delete=models.CASCADE)
-
+	bid_item = models.ForeignKey(Items,blank=True,null=True,on_delete=models.CASCADE)
 	def __str__(self):
 		return str(self.bid_item) + " " + str(self.user)
 
